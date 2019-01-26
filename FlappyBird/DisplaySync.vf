@@ -1,0 +1,70 @@
+////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 1995-2013 Xilinx, Inc.  All rights reserved.
+////////////////////////////////////////////////////////////////////////////////
+//   ____  ____ 
+//  /   /\/   / 
+// /___/  \  /    Vendor: Xilinx 
+// \   \   \/     Version : 14.7
+//  \   \         Application : sch2hdl
+//  /   /         Filename : DisplaySync.vf
+// /___/   /\     Timestamp : 11/04/2018 22:09:00
+// \   \  /  \ 
+//  \___\/\___\ 
+//
+//Command: sch2hdl -intstyle ise -family kintex7 -verilog C:/Users/BIG/Desktop/LACD-EX6-1/ScroeBoard/DisplaySync.vf -w C:/Users/BIG/Desktop/LACD-EX6-1/ScroeBoard/DisplaySync.sch
+//Design Name: DisplaySync
+//Device: kintex7
+//Purpose:
+//    This verilog netlist is translated from an ECS schematic.It can be 
+//    synthesized and simulated, but it should not be modified. 
+//
+`timescale 1ns / 1ps
+
+module DisplaySync(Hexs, 
+                   LES, 
+                   point, 
+                   Scan, 
+                   AN, 
+                   HEX, 
+                   LE, 
+                   p);
+
+    input [15:0] Hexs;
+    input [3:0] LES;
+    input [3:0] point;
+    input [1:0] Scan;
+   output [3:0] AN;
+   output [3:0] HEX;
+   output LE;
+   output p;
+   
+   wire V0;
+   wire V1;
+   
+   GND  GND1 (.G(V0));
+   VCC  VCC1 (.P(V1));
+   Mux4to1b4  XLXI_1 (.I0(Hexs[3:0]), 
+                     .I1(Hexs[7:4]), 
+                     .I2(Hexs[11:8]), 
+                     .I3(Hexs[15:12]), 
+                     .S(Scan[1:0]), 
+                     .O(HEX[3:0]));
+   Mux4to1b4  XLXI_2 (.I0({V1, V1, V1, V0}), 
+                     .I1({V1, V1, V0, V1}), 
+                     .I2({V1, V0, V1, V1}), 
+                     .I3({V0, V1, V1, V1}), 
+                     .S(Scan[1:0]), 
+                     .O(AN[3:0]));
+   Mux4to1  XLXI_3 (.I0(point[0]), 
+                   .I1(point[1]), 
+                   .I2(point[2]), 
+                   .I3(point[3]), 
+                   .S(Scan[1:0]), 
+                   .O(p));
+   Mux4to1  XLXI_4 (.I0(LES[0]), 
+                   .I1(LES[1]), 
+                   .I2(LES[2]), 
+                   .I3(LES[3]), 
+                   .S(Scan[1:0]), 
+                   .O(LE));
+endmodule
